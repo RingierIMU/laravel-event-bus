@@ -2,11 +2,32 @@
 
 namespace Ringierimu\EventBus;
 
-use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Ringierimu\EventBus\Contracts\ShouldBroadcastToEventBus;
+use Ringierimu\EventBus\Listeners\DispatchBroadcastToEventBusJob;
 
-class EventBusServiceProvider extends ServiceProvider implements DeferrableProvider
+class EventBusServiceProvider extends ServiceProvider
 {
+    /**
+     * Bootstrap any package services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../config/event-bus.php' => config_path('event-bus.php'),
+            ]);
+        }
+
+        Event::listen(
+            ShouldBroadcastToEventBus::class,
+            DispatchBroadcastToEventBusJob::class
+        );
+    }
+
     /**
      * Register any application services.
      *
@@ -14,16 +35,22 @@ class EventBusServiceProvider extends ServiceProvider implements DeferrableProvi
      */
     public function register()
     {
+        $this->configure();
 
+        $this->app->bind(Client::class, function () {
+            return new Client(config('services.service_bus'));
+        });
     }
 
     /**
-     * Get the services provided by the provider.
+     * Setup the configuration for Event Bus.
      *
-     * @return array
+     * @return void
      */
-    public function provides()
+    protected function configure()
     {
-        return [];
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/event-bus.php', 'event-bus'
+        );
     }
 }
