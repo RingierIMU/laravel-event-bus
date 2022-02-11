@@ -7,7 +7,8 @@ use Ringierimu\EventBus\Event;
 interface ShouldBroadcastToEventBus
 {
     /**
-     * Format the 
+     * Get the representation of the event for the EventBus.
+     * 
      * @param  Event  $event
      * @return Event
      */

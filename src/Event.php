@@ -21,14 +21,14 @@ class Event
      * @param  array  $payload
      */
     public function __construct(
-        protected string $ventureReference,
-        protected string $eventType,
-        protected Carbon $createdAt,
+        protected string  $ventureReference,
+        protected string  $eventType,
+        protected Carbon  $createdAt,
         protected ?string $culture = null,
         protected ?string $actionType = null,
         protected ?string $actionReference = null,
         protected ?string $route = null,
-        protected array $payload = [],
+        protected array   $payload = [],
     ) {
     }
 
@@ -47,6 +47,19 @@ class Event
         $ventureReference = Str::uuid()->toString();
 
         return new static($ventureReference, $eventType, $createdAt, $culture);
+    }
+
+    /**
+     * Set the Event type.
+     *
+     * @param  string  $eventType
+     * @return Event
+     */
+    public function withEventType(string $eventType): Event
+    {
+        $this->eventType = $eventType;
+
+        return $this;
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace Ringierimu\EventBus\Listeners;
 
 use Ringierimu\EventBus\Contracts\ShouldBroadcastToEventBus;
+use Ringierimu\EventBus\Event;
+use Ringierimu\EventBus\Jobs\BroadcastToEventBus;
 
 class DispatchBroadcastToEventBusJob
 {
@@ -14,6 +16,10 @@ class DispatchBroadcastToEventBusJob
      */
     public function handle(ShouldBroadcastToEventBus $event)
     {
-        // Access the order using $event->order...
+        $busEvent = $event->withServiceBusEventAs(
+            Event::make(class_basename($event))
+        );
+
+        BroadcastToEventBus::dispatch($busEvent);
     }
 }
