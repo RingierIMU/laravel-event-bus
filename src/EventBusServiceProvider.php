@@ -18,7 +18,7 @@ class EventBusServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../config/event-bus.php' => config_path('event-bus.php'),
+                __DIR__.'/../config/event-bus.php' => config_path('event-bus.php'),
             ]);
         }
 
@@ -48,7 +48,7 @@ class EventBusServiceProvider extends ServiceProvider
     protected function configure()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/event-bus.php', 'event-bus'
+            __DIR__.'/../config/event-bus.php', 'event-bus'
         );
     }
 }

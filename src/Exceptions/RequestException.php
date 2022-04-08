@@ -22,7 +22,7 @@ class RequestException extends Exception
             'tags' => ['service-bus'],
         ]);
 
-        throw new static('Could not get an auth token from the server: ' . $exception->getMessage());
+        throw new static('Could not get an auth token from the server: '.$exception->getMessage());
     }
 
     /**
@@ -37,7 +37,7 @@ class RequestException extends Exception
         logger()->error('Something went wrong logging in', [
             'response' => [
                 'statusCode' => $response->getStatusCode(),
-                'body' => (string)$response->getBody(),
+                'body' => (string) $response->getBody(),
             ],
             'tags' => ['service-bus'],
         ]);
@@ -59,6 +59,6 @@ class RequestException extends Exception
             'tags' => ['service-bus'],
         ]);
 
-        throw new static('Something went wrong logging the event: ' . $exception->getMessage());
+        throw new static('Something went wrong logging the event: '.$exception->getMessage());
     }
 }

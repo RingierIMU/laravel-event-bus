@@ -19,7 +19,7 @@ class BroadcastToEventBusTest extends TestCase
             'id' => 1,
             'user_id' => 1,
             'title' => 'Listing title',
-            'description' => 'Listing description'
+            'description' => 'Listing description',
         ]);
     }
 }

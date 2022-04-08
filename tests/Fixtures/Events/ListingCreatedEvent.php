@@ -14,7 +14,7 @@ class ListingCreatedEvent implements ShouldBroadcastToEventBus
     /**
      * Create an instance of ListingCreated event.
      *
-     * @param array $listing
+     * @param  array  $listing
      */
     public function __construct(
         public array $listing
@@ -24,7 +24,7 @@ class ListingCreatedEvent implements ShouldBroadcastToEventBus
     /**
      * Get the representation of the event for the event bus.
      *
-     * @param  Event $event
+     * @param  Event  $event
      * @return Event
      */
     public function toEventBus(Event $event): Event
