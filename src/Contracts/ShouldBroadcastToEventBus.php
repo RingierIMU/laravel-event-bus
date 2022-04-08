@@ -8,7 +8,7 @@ interface ShouldBroadcastToEventBus
 {
     /**
      * Get the representation of the event for the event bus.
-     * 
+     *
      * @param  Event  $event
      * @return Event
      */

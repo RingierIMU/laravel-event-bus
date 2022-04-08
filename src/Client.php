@@ -3,11 +3,11 @@
 namespace Ringierimu\EventBus;
 
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\RequestException as IlluminateRequestException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Ringierimu\EventBus\Exceptions\RequestException;
-use Illuminate\Http\Client\RequestException as IlluminateRequestException;
 
 class Client
 {
@@ -35,7 +35,7 @@ class Client
         $params = $event->toEventBus($this->ventureConfig);
 
         if (
-            !Arr::get($this->ventureConfig, 'enabled', true) ||
+            ! Arr::get($this->ventureConfig, 'enabled', true) ||
             in_array($eventType, Arr::get($this->ventureConfig, 'dont_report', []))
         ) {
             logger()->debug("$eventType service bus notification [disabled]", [
@@ -64,7 +64,7 @@ class Client
                          ->post('events', [$params]);
 
         if ($response->failed()) {
-            logger()->error($response->status() . ' code received from event bus', [
+            logger()->error($response->status().' code received from event bus', [
                 'event' => $eventType,
                 'params' => $params,
                 'tags' => ['service-bus'],
@@ -116,6 +116,7 @@ class Client
      * Generate a new token for authentication with event bus.
      *
      * @return string
+     *
      * @throws RequestException
      */
     protected function generateToken(): string
@@ -147,7 +148,7 @@ class Client
     protected function generateTokenCacheKey(): string
     {
         return md5(
-            'service-bus-token' .
+            'service-bus-token'.
             Arr::get($this->ventureConfig, 'venture_config_id')
         );
     }

@@ -33,7 +33,7 @@ return [
     | bus client.
     |
     */
-    
+
     'venture' => [
         'culture' => env('RINGIER_SB_CULTURE', 'en_GB'),
         'dont_report' => [
@@ -50,7 +50,7 @@ return [
         'version' => env('RINGIER_SB_VERSION', '0.3.0'),
         'send_notifications' => env('RINGIER_SB_SEND_NOTIFICATION', true),
     ],
-    
+
     /*
     |--------------------------------------------------------------------------
     | Queue name
@@ -60,7 +60,7 @@ return [
     | If not specified your default queue will be used.
     |
     */
-    
+
     'queue' => env('RINGIER_SB_QUEUE'),
 
     /*

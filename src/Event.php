@@ -22,14 +22,14 @@ class Event
      * @param  array  $payload
      */
     public function __construct(
-        protected string  $ventureReference,
-        protected string  $eventType,
-        protected Carbon  $createdAt,
+        protected string $ventureReference,
+        protected string $eventType,
+        protected Carbon $createdAt,
         protected ?string $culture = null,
         protected ?string $actionType = null,
         protected ?string $actionReference = null,
         protected ?string $route = null,
-        protected array   $payload = [],
+        protected array $payload = [],
     ) {
     }
 
@@ -81,7 +81,7 @@ class Event
      * ISO representation of the language and culture active on the
      * system when the event was created. This can be set here
      * for each individual event, or it can be set in config
-     * services.service_bus.culture
+     * services.service_bus.culture.
      *
      * @param  string  $culture
      * @return Event
@@ -113,8 +113,8 @@ class Event
     {
         $allowedTypes = config('event-bus.action_types');
 
-        if (!in_array($type, $allowedTypes)) {
-            throw new InvalidConfigException('Action type must be on of the following: ' . print_r($allowedTypes, true));
+        if (! in_array($type, $allowedTypes)) {
+            throw new InvalidConfigException('Action type must be on of the following: '.print_r($allowedTypes, true));
         }
 
         $this->actionType = $type;
@@ -185,7 +185,7 @@ class Event
      */
     public function id(): string
     {
-        return 'event_' . $this->eventType . '_' . $this->ventureReference;
+        return 'event_'.$this->eventType.'_'.$this->ventureReference;
     }
 
     /**
