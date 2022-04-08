@@ -22,18 +22,15 @@ class DispatchBroadcastToEventBusJob
             $eventType = $event->broadcastToEventBusAs();
         }
 
-        $busEvent = $event->withServiceBusEventAs(Event::make($eventType));
+        $busEvent = $event->toEventBus(Event::make($eventType));
 
-        $queue = config('event-bus.queue');
-        $connection = config('event-bus.queue_connection');
+        $queue = method_exists($event, 'onQueue')
+            ? $event->onQueue($busEvent)
+            : config('event-bus.queue');
 
-        if (method_exists($event, 'broadcastToEventBusOnQueue')) {
-            $queue = $event->broadcastToEventBusOnQueue($busEvent);
-        }
-
-        if (method_exists($event, 'broadcastToEventBusOnQueueConnection')) {
-            $connection = $event->broadcastToEventBusOnQueueConnection($busEvent);
-        }
+        $connection = method_exists($event, 'onConnection')
+            ? $event->onConnection($busEvent)
+            : config('event-bus.queue_connection');
 
         BroadcastToEventBus::dispatch($busEvent)
                            ->onQueue($queue)

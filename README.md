@@ -38,7 +38,7 @@ You are encouraged to have a further look at the `config/event-bus.php` file to 
 
 To make a Laravel Event dispatchable onto the bus you only need to have your event class extend the 
 `Ringierimu\EventBus\Contracts\ShouldBroadcastToEventBus` interface. You then need to implement 
-the `withServiceBusEventAs` method on the Event class; this will allow you to configure how the 
+the `toEventBus` method on the Event class; this will allow you to configure how the 
 event will be sent to the bus as. E.g payload, eventType, action and so on.
 
 ```php
@@ -70,7 +70,7 @@ class ListingCreatedEvent implements ShouldBroadcastToEventBus
      * @param  Event  $event
      * @return Event
      */
-    public function withServiceBusEventAs(Event $event): Event
+    public function toEventBus(Event $event): Event
     {
         return $event
             ->withAction('user', $this->listing->user_id)
@@ -116,7 +116,7 @@ class ListingController extends Controller
 ### Customising the Event type
 
 By default, event type is being sent as the name of the event class. However, you can customise the type name by using the `withEventType` method 
-of the `Ringierimu\EventBus\Event` class. In your `withServiceBusEventAs` method do the following:
+of the `Ringierimu\EventBus\Event` class. In your `toEventBus` method do the following:
 
 ```php
 /**
@@ -125,7 +125,7 @@ of the `Ringierimu\EventBus\Event` class. In your `withServiceBusEventAs` method
  * @param  Event  $event
  * @return Event
  */
-public function withServiceBusEventAs(Event $event): Event
+public function toEventBus(Event $event): Event
 {
     return $event
         ->withEventType('UserListingCreatedEvent')
@@ -170,7 +170,7 @@ class ListingCreatedEvent implements ShouldBroadcastToEventBus
      * @param  Event  $event
      * @return Event
      */
-    public function withServiceBusEventAs(Event $event): Event
+    public function toEventBus(Event $event): Event
     {
         return $event
             ->withAction('user', $this->listing->user_id)
@@ -205,7 +205,7 @@ RINGIER_SB_QUEUE_CONNECTION=redis
 ```
 
 Alternatively you can specify the queue and connection on a per-Event basis by adding 
-the `broadcastToEventBusOnQueue` and `broadcastToEventBusOnQueueConnection` methods
+the `onQueue` and `onConnection` methods
 to your Laravel Event classes.
 
 ```php
@@ -237,7 +237,7 @@ class ListingCreatedEvent implements ShouldBroadcastToEventBus
      * @param  Event  $event
      * @return Event
      */
-    public function withServiceBusEventAs(Event $event): Event
+    public function toEventBus(Event $event): Event
     {
         return $event
             ->withAction('user', $this->listing->user_id)
@@ -254,18 +254,18 @@ class ListingCreatedEvent implements ShouldBroadcastToEventBus
      * @param  Event  $event
      * @return string
      */
-    public function broadcastToEventBusOnQueue(Event $event): string
+    public function onQueue(Event $event): string
     {
         return 'eventbus';
     }
     
     /**
-     * Specify the queue name on which this event should be processed.
+     * Specify the queue connection on which this event should be processed.
      *
      * @param  Event  $event
      * @return string
      */
-    public function broadcastToEventBusOnQueueConnection(Event $event): string
+    public function onConnection(Event $event): string
     {
         return 'redis';
     }
