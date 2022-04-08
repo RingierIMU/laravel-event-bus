@@ -42,8 +42,6 @@ the `withServiceBusEventAs` method on the Event class; this will allow you to co
 event will be sent to the bus as. E.g payload, eventType, action and so on.
 
 ```php
-<?php
-
 namespace App\Events
 
 use App\Models\Listing;
@@ -88,8 +86,6 @@ class ListingCreatedEvent implements ShouldBroadcastToEventBus
 Finally, just dispatch you event as you would any normal Laravel event. Your event will now be dispatched onto the bus.
 
 ```php
-<?php
-
 namespace App\Http\Controllers;
 
 use App\Events\ListingCreatedEvent;
@@ -146,8 +142,6 @@ You may also implement a `broadcastToEventBusAs` method on your Laravel Event cl
 take precedence over `broadcastToEventBusAs`.
 
 ```php
-<?php
-
 namespace App\Events
 
 use App\Models\Listing;
@@ -215,8 +209,6 @@ the `broadcastToEventBusOnQueue` and `broadcastToEventBusOnQueueConnection` meth
 to your Laravel Event classes.
 
 ```php
-<?php
-
 namespace App\Events
 
 use App\Models\Listing;

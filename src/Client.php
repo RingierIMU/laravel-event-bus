@@ -32,7 +32,7 @@ class Client
     public function send(Event $event): void
     {
         $eventType = $event->getEventType();
-        $params = $event->toEventBus();
+        $params = $event->toEventBus($this->ventureConfig);
 
         if (
             !Arr::get($this->ventureConfig, 'enabled', true) ||

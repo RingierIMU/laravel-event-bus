@@ -16,7 +16,7 @@ abstract class TestCase extends OrchestraTestCase
      */
     protected function getEnvironmentSetUp($app)
     {
-        $app['config']->set('services.service_bus', [
+        $app['config']->set('event-bus.venture', [
             'culture' => 'en_GB',
             'dont_report' => [],
             'enabled' => true,
@@ -24,7 +24,6 @@ abstract class TestCase extends OrchestraTestCase
             'password' => 'password',
             'username' => 'bus-user',
             'venture_config_id' => '21ea5c49-e3de-48ed-90a8-90495030cf4d',
-            'validator_url' => 'https://validator.bus.520152236921.ritdu.tech/api/schema/validate',
             'version' => '0.3.0',
         ]);
     }

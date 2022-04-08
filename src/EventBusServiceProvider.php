@@ -37,22 +37,7 @@ class EventBusServiceProvider extends ServiceProvider
     {
         $this->configure();
 
-        $this->app->bind(Client::class, function () {
-            $clientConfig = [
-                'culture' => config('event-bus.culture'),
-                'dont_report' => config('event-bus.dont_report'),
-                'enabled' => config('event-bus.enabled'),
-                'endpoint' => config('event-bus.credentials.endpoint'),
-                'password' => config('event-bus.credentials.password'),
-                'username' => config('event-bus.credentials.username'),
-                'venture_config_id' => config('event-bus.venture_config_id'),
-                'validator_url' => config('event-bus.validator_url'),
-                'version' =>config('event-bus.credentials.version'),
-                'send_notifications' => config('event-bus.send_notifications'),
-            ];
-
-            return new Client($clientConfig);
-        });
+        $this->app->bind(Client::class, fn () => new Client(config('event-bus.venture')));
     }
 
     /**
