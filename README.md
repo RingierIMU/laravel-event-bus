@@ -2,6 +2,14 @@
     Laravel Event Bus
 </h2>
 
+<p align="center">
+<a href="https://github.com/RingierIMU/laravel-event-bus/actions"><img src="https://github.com/RingierIMU/laravel-event-bus/workflows/Quality/badge.svg" alt="Build Status"></a>
+<a href="https://github.styleci.io/repos/427248077?branch=main"><img src="https://github.styleci.io/repos/427248077/shield?branch=main" alt="StyleCI"></a>
+<a href="https://packagist.org/packages/ringierimu/event-bus"><img src="https://img.shields.io/packagist/dt/ringierimu/event-bus" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/ringierimu/event-bus"><img src="https://img.shields.io/packagist/v/ringierimu/event-bus" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/ringierimu/event-bus"><img src="https://img.shields.io/packagist/l/ringierimu/event-bus" alt="License"></a>
+</p>
+
 ## Introduction
 
 Laravel Event Bus provides a simple interface that provides a Laravel event
