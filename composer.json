@@ -1,6 +1,7 @@
 {
     "name": "ringierimu/event-bus",
     "description": "Send Laravel Events to Event Bus",
+    "license": "MIT",
     "support": {
         "issues": "https://github.com/RingierIMU/laravel-event-bus/issues",
         "source": "https://github.com/RingierIMU/laravel-event-bus"
@@ -9,7 +10,13 @@
     "authors": [
         {
             "name": "Percy Mamedy",
-            "email": "percym@ringier.co.za"
+            "email": "percym@ringier.co.za",
+            "role": "Developer"
+        },
+        {
+            "name": "Norby Baruani",
+            "email": "norbyb@ringier.co.za",
+            "role": "Developer"
         }
     ],
     "require": {
