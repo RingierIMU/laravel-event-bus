@@ -37,13 +37,11 @@ class EventBusServiceProvider extends ServiceProvider
     {
         $this->configure();
 
-        $this->app->bind(Client::class, function () {
-            return new Client(config('services.service_bus'));
-        });
+        $this->app->bind(Client::class, fn () => new Client(config('event-bus.venture')));
     }
 
     /**
-     * Setup the configuration for Event Bus.
+     * Set up the configuration for Event Bus.
      *
      * @return void
      */

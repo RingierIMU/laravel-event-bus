@@ -16,10 +16,24 @@ class DispatchBroadcastToEventBusJob
      */
     public function handle(ShouldBroadcastToEventBus $event)
     {
-        $busEvent = $event->withServiceBusEventAs(
-            Event::make(class_basename($event))
-        );
+        $eventType = class_basename($event);
 
-        BroadcastToEventBus::dispatch($busEvent);
+        if (method_exists($event, 'broadcastToEventBusAs')) {
+            $eventType = $event->broadcastToEventBusAs();
+        }
+
+        $busEvent = $event->toEventBus(Event::make($eventType));
+
+        $queue = method_exists($event, 'onQueue')
+            ? $event->onQueue($busEvent)
+            : config('event-bus.queue');
+
+        $connection = method_exists($event, 'onConnection')
+            ? $event->onConnection($busEvent)
+            : config('event-bus.queue_connection');
+
+        BroadcastToEventBus::dispatch($busEvent)
+                           ->onQueue($queue)
+                           ->onConnection($connection);
     }
 }

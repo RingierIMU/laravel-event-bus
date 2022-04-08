@@ -22,12 +22,12 @@ class ListingCreatedEvent implements ShouldBroadcastToEventBus
     }
 
     /**
-     * Get the representation of the event for the EventBus.
+     * Get the representation of the event for the event bus.
      *
-     * @param Event $event
+     * @param  Event $event
      * @return Event
      */
-    public function withServiceBusEventAs(Event $event): Event
+    public function toEventBus(Event $event): Event
     {
         return $event
             ->withAction('user', $this->listing['user_id'])

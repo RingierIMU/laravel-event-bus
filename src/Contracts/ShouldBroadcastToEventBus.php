@@ -7,10 +7,10 @@ use Ringierimu\EventBus\Event;
 interface ShouldBroadcastToEventBus
 {
     /**
-     * Get the representation of the event for the EventBus.
+     * Get the representation of the event for the event bus.
      * 
      * @param  Event  $event
      * @return Event
      */
-    public function withServiceBusEventAs(Event $event): Event;
+    public function toEventBus(Event $event): Event;
 }

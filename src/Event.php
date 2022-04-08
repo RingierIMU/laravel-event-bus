@@ -2,6 +2,7 @@
 
 namespace Ringierimu\EventBus;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Ringierimu\EventBus\Exceptions\InvalidConfigException;
@@ -42,8 +43,8 @@ class Event
      */
     public static function make(string $eventType, ?string $culture = null, ?Carbon $createdAt = null): Event
     {
-        $culture = $culture ?? config('services.service_bus.culture');
-        $createdAt = $createdAt ?? Carbon::now();
+        $culture = $culture ?? config('event-bus.venture.culture');
+        $createdAt = $createdAt ?? now();
         $ventureReference = Str::uuid()->toString();
 
         return new static($ventureReference, $eventType, $createdAt, $culture);
@@ -190,19 +191,20 @@ class Event
     /**
      * Return the event as an array that can be sent to the service.
      *
+     * @param  array  $ventureConfig
      * @return array
      */
-    public function toEventBus(): array
+    public function toEventBus(array $ventureConfig): array
     {
         return [
             'events' => [$this->eventType],
             'venture_reference' => $this->ventureReference,
-            'venture_config_id' => config('services.service_bus.venture_config_id'),
+            'venture_config_id' => Arr::get($ventureConfig, 'venture_config_id'),
             'created_at' => $this->createdAt->toISOString(),
             'culture' => $this->culture,
             'action_type' => $this->actionType,
             'action_reference' => $this->actionReference,
-            'version' => config('services.service_bus.version'),
+            'version' => Arr::get($ventureConfig, 'version'),
             'route' => $this->route,
             'payload' => $this->payload,
         ];
