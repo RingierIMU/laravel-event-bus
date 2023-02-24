@@ -21,10 +21,6 @@ jobs:
         laravel: [8.*, 9.*, 10.*]
         dependency-version: [prefer-stable]
         include:
-          - laravel: 9.*
-            testbench: ^7.0
-          - dependency-version: prefer-stable
-            sailthru: ^1.2
         exclude:
           - laravel: 10.*
             php: 8.0
@@ -56,7 +52,7 @@ jobs:
 
       - name: Install Composer dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "sailthru/sailthru-php5-client:${{ matrix.sailthru }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
       - name: Run PHPUnit tests
         run: |
