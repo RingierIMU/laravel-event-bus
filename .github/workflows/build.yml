@@ -23,8 +23,6 @@ jobs:
         include:
           - laravel: 9.*
             testbench: ^7.0
-          - dependency-version: prefer-lowest
-            sailthru: ^1.2.4
           - dependency-version: prefer-stable
             sailthru: ^1.2
         exclude:
