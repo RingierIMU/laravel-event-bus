@@ -43,6 +43,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{matrix.php}}
+          ini-values: error_reporting=E_ALL & ~E_DEPRECATED
 
       - name: Get Composer cache directory
         id: composer-cache
