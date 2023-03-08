@@ -34,7 +34,7 @@ class DispatchBroadcastToEventBusJob
 
         $delay = method_exists($event, 'delay')
             ? $event->delay($busEvent)
-            : config('event-bus.delay');
+            : config('event-bus.queue_delay');
 
         BroadcastToEventBus::dispatch($busEvent)
             ->onQueue($queue)
