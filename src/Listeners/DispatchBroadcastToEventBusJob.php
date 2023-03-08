@@ -11,7 +11,7 @@ class DispatchBroadcastToEventBusJob
     /**
      * Handle the event.
      *
-     * @param ShouldBroadcastToEventBus $event
+     * @param  ShouldBroadcastToEventBus  $event
      *
      * @return void
      */
