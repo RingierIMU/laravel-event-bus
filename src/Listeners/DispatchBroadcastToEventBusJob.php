@@ -11,7 +11,8 @@ class DispatchBroadcastToEventBusJob
     /**
      * Handle the event.
      *
-     * @param  ShouldBroadcastToEventBus  $event
+     * @param ShouldBroadcastToEventBus $event
+     *
      * @return void
      */
     public function handle(ShouldBroadcastToEventBus $event)
@@ -32,8 +33,13 @@ class DispatchBroadcastToEventBusJob
             ? $event->onConnection($busEvent)
             : config('event-bus.queue_connection');
 
+        $delay = method_exists($event, 'delay')
+            ? $event->delay($busEvent)
+            : config('event-bus.delay');
+
         BroadcastToEventBus::dispatch($busEvent)
-                           ->onQueue($queue)
-                           ->onConnection($connection);
+            ->onQueue($queue)
+            ->onConnection($connection)
+            ->delay($delay);
     }
 }
