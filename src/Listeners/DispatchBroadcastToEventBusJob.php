@@ -32,8 +32,13 @@ class DispatchBroadcastToEventBusJob
             ? $event->onConnection($busEvent)
             : config('event-bus.queue_connection');
 
+        $delay = method_exists($event, 'delay')
+            ? $event->delay($busEvent)
+            : config('event-bus.queue_delay');
+
         BroadcastToEventBus::dispatch($busEvent)
-                           ->onQueue($queue)
-                           ->onConnection($connection);
+            ->onQueue($queue)
+            ->onConnection($connection)
+            ->delay($delay);
     }
 }

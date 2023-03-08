@@ -74,4 +74,17 @@ return [
     */
 
     'queue_connection' => env('RINGIER_SB_QUEUE_CONNECTION'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Delay
+    |--------------------------------------------------------------------------
+    |
+    | Add a delay prior to the processing of the event bus job. This may be of
+    | use in reducing the total number of jobs being queue if many
+    | of the are duplicates
+    |
+    */
+
+    'queue_delay' => env('RINGIER_SB_QUEUE_DELAY'),
 ];
