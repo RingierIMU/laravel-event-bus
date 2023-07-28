@@ -50,7 +50,7 @@ class Client
         $response = $this->request()
                          ->retry(3, 100, function ($exception, $request) {
                              // Handle token expiry.
-                             if ($exception instanceof IlluminateRequestException && $request->response->status === 401) {
+                             if ($exception instanceof IlluminateRequestException && $exception->response->status() === 401) {
                                  $request->withHeaders([
                                      'x-api-key' => $this->getToken(true),
                                  ]);
