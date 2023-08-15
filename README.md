@@ -81,7 +81,6 @@ class ListingCreatedEvent implements ShouldBroadcastToEventBus
     public function toEventBus(Event $event): Event
     {
         return $event
-            ->withAction('user', $this->listing->user_id)
             ->withPayload([
                 'id' => $this->listing->id,
                 'title' => $this->listing->title,
@@ -137,7 +136,6 @@ public function toEventBus(Event $event): Event
 {
     return $event
         ->withEventType('UserListingCreatedEvent')
-        ->withAction('user', $this->listing->user_id)
         ->withPayload([
             'id' => $this->listing->id,
             'title' => $this->listing->title,
@@ -181,7 +179,6 @@ class ListingCreatedEvent implements ShouldBroadcastToEventBus
     public function toEventBus(Event $event): Event
     {
         return $event
-            ->withAction('user', $this->listing->user_id)
             ->withPayload([
                 'id' => $this->listing->id,
                 'title' => $this->listing->title,
@@ -248,7 +245,6 @@ class ListingCreatedEvent implements ShouldBroadcastToEventBus
     public function toEventBus(Event $event): Event
     {
         return $event
-            ->withAction('user', $this->listing->user_id)
             ->withPayload([
                 'id' => $this->listing->id,
                 'title' => $this->listing->title,
