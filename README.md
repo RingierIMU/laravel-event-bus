@@ -35,7 +35,7 @@ by your application.
 Update your `.env` file with the following variable substitution the correct values for your application:
 
 ```dotenv
-RINGIER_SB_VENTURE_CONFIG_ID=123456789
+RINGIER_SB_NODE_ID=123456789
 RINGIER_SB_USER=event_bus_user
 RINGIER_SB_PASSWORD=event_bus_password
 ```

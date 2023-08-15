@@ -46,7 +46,7 @@ return [
         'endpoint' => env('RINGIER_SB_ENDPOINT', 'https://bus.ritdu.net/v1/'),
         'password' => env('RINGIER_SB_PASSWORD'),
         'username' => env('RINGIER_SB_USER'),
-        'venture_config_id' => env('RINGIER_SB_VENTURE_CONFIG_ID'),
+        'node_id' => env('RINGIER_SB_NODE_ID'),
         'version' => env('RINGIER_SB_VERSION', '0.3.0'),
         'send_notifications' => env('RINGIER_SB_SEND_NOTIFICATION', true),
     ],

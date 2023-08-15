@@ -107,7 +107,7 @@ class Client
                          ->post('login', Arr::only($this->ventureConfig, [
                              'username',
                              'password',
-                             'venture_config_id',
+                             'node_id',
                          ]));
 
         if ($response->clientError()) {
@@ -135,7 +135,7 @@ class Client
     {
         return md5(
             'service-bus-token'.
-            Arr::get($this->ventureConfig, 'venture_config_id')
+            Arr::get($this->ventureConfig, 'node_id')
         );
     }
 }

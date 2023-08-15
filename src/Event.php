@@ -199,7 +199,7 @@ class Event
         return [
             'events' => [$this->eventType],
             'venture_reference' => $this->ventureReference,
-            'venture_config_id' => Arr::get($ventureConfig, 'venture_config_id'),
+            'node_id' => Arr::get($ventureConfig, 'node_id'),
             'created_at' => $this->createdAt->toISOString(),
             'culture' => $this->culture,
             'action_type' => $this->actionType,
