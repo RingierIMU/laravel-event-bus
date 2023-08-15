@@ -35,7 +35,7 @@ by your application.
 Update your `.env` file with the following variable substitution the correct values for your application:
 
 ```dotenv
-RINGIER_SB_VENTURE_CONFIG_ID=123456789
+RINGIER_SB_NODE_ID=123456789
 RINGIER_SB_USER=event_bus_user
 RINGIER_SB_PASSWORD=event_bus_password
 ```
@@ -81,7 +81,6 @@ class ListingCreatedEvent implements ShouldBroadcastToEventBus
     public function toEventBus(Event $event): Event
     {
         return $event
-            ->withAction('user', $this->listing->user_id)
             ->withPayload([
                 'id' => $this->listing->id,
                 'title' => $this->listing->title,
@@ -137,7 +136,6 @@ public function toEventBus(Event $event): Event
 {
     return $event
         ->withEventType('UserListingCreatedEvent')
-        ->withAction('user', $this->listing->user_id)
         ->withPayload([
             'id' => $this->listing->id,
             'title' => $this->listing->title,
@@ -181,7 +179,6 @@ class ListingCreatedEvent implements ShouldBroadcastToEventBus
     public function toEventBus(Event $event): Event
     {
         return $event
-            ->withAction('user', $this->listing->user_id)
             ->withPayload([
                 'id' => $this->listing->id,
                 'title' => $this->listing->title,
@@ -248,7 +245,6 @@ class ListingCreatedEvent implements ShouldBroadcastToEventBus
     public function toEventBus(Event $event): Event
     {
         return $event
-            ->withAction('user', $this->listing->user_id)
             ->withPayload([
                 'id' => $this->listing->id,
                 'title' => $this->listing->title,

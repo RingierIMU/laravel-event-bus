@@ -30,7 +30,6 @@ class ListingCreatedEvent implements ShouldBroadcastToEventBus
     public function toEventBus(Event $event): Event
     {
         return $event
-            ->withAction('user', $this->listing['user_id'])
             ->withPayload($this->listing);
     }
 }

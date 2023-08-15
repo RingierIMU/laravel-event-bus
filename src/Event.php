@@ -2,8 +2,8 @@
 
 namespace Ringierimu\EventBus;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Ringierimu\EventBus\Exceptions\InvalidConfigException;
 
@@ -12,23 +12,17 @@ class Event
     /**
      * Create a new instance of Event.
      *
-     * @param  string  $ventureReference
+     * @param  string  $reference
      * @param  string  $eventType
      * @param  Carbon  $createdAt
-     * @param  string|null  $culture
-     * @param  string|null  $actionType
-     * @param  string|null  $actionReference
-     * @param  string|null  $route
+     * @param  string  $route
      * @param  array  $payload
      */
     public function __construct(
-        protected string $ventureReference,
+        protected string $reference,
         protected string $eventType,
         protected Carbon $createdAt,
-        protected ?string $culture = null,
-        protected ?string $actionType = null,
-        protected ?string $actionReference = null,
-        protected ?string $route = null,
+        protected string $route = '',
         protected array $payload = [],
     ) {
     }
@@ -37,17 +31,15 @@ class Event
      * Create an Event to be sent to the Event bus.
      *
      * @param  string  $eventType
-     * @param  string|null  $culture
      * @param  Carbon|null  $createdAt
      * @return Event
      */
-    public static function make(string $eventType, ?string $culture = null, ?Carbon $createdAt = null): Event
+    public static function make(string $eventType, ?Carbon $createdAt = null): Event
     {
-        $culture = $culture ?? config('event-bus.venture.culture');
         $createdAt = $createdAt ?? now();
-        $ventureReference = Str::uuid()->toString();
+        $reference = Str::uuid()->toString();
 
-        return new static($ventureReference, $eventType, $createdAt, $culture);
+        return new static($reference, $eventType, $createdAt);
     }
 
     /**
@@ -67,58 +59,12 @@ class Event
      * Source reference for the event.If this is not sent a
      * UUID will be generated and sent with the request.
      *
-     * @param  string  $ventureReference
-     * @return Event
-     */
-    public function withReference(string $ventureReference): Event
-    {
-        $this->ventureReference = $ventureReference;
-
-        return $this;
-    }
-
-    /**
-     * ISO representation of the language and culture active on the
-     * system when the event was created. This can be set here
-     * for each individual event, or it can be set in config
-     * services.service_bus.culture.
-     *
-     * @param  string  $culture
-     * @return Event
-     */
-    public function withCulture(string $culture): Event
-    {
-        $this->culture = $culture;
-
-        return $this;
-    }
-
-    /**
-     * The type needs to be one of config('event-bus.action_types') and
-     * represents who initiated the event e.g. a user on the site,
-     * an administrator, via an api or internally in the system
-     * or app or via a data migration. The reference is who
-     * created the event where relevant to the type.Use
-     * this to track e.g. which user created a
-     * listing. or that a user registered
-     * from facebook.
-     *
-     * @param  string  $type
      * @param  string  $reference
      * @return Event
-     *
-     * @throws InvalidConfigException
      */
-    public function withAction(string $type, string $reference): Event
+    public function withReference(string $reference): Event
     {
-        $allowedTypes = config('event-bus.action_types');
-
-        if (! in_array($type, $allowedTypes)) {
-            throw new InvalidConfigException('Action type must be on of the following: '.print_r($allowedTypes, true));
-        }
-
-        $this->actionType = $type;
-        $this->actionReference = $reference;
+        $this->reference = $reference;
 
         return $this;
     }
@@ -185,28 +131,25 @@ class Event
      */
     public function id(): string
     {
-        return 'event_'.$this->eventType.'_'.$this->ventureReference;
+        return 'event_'.$this->eventType.'_'.$this->reference;
     }
 
     /**
      * Return the event as an array that can be sent to the service.
      *
-     * @param  array  $ventureConfig
+     * @param  Collection  $config
      * @return array
      */
-    public function toEventBus(array $ventureConfig): array
+    public function toEventBus(Collection $config): array
     {
         return [
-            'events' => [$this->eventType],
-            'venture_reference' => $this->ventureReference,
-            'venture_config_id' => Arr::get($ventureConfig, 'venture_config_id'),
             'created_at' => $this->createdAt->toISOString(),
-            'culture' => $this->culture,
-            'action_type' => $this->actionType,
-            'action_reference' => $this->actionReference,
-            'version' => Arr::get($ventureConfig, 'version'),
-            'route' => $this->route,
+            'events' => [$this->eventType],
+            'from' => $config->get('node_id'),
             'payload' => $this->payload,
+            'reference' => $this->reference,
+            'route' => $this->route,
+            'version' => $config->get('version'),
         ];
     }
 }

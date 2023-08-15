@@ -2,23 +2,28 @@
 
 namespace Ringierimu\EventBus;
 
+use Exception;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException as IlluminateRequestException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Ringierimu\EventBus\Exceptions\RequestException;
 
 class Client
 {
+    protected Collection $config;
+
     /**
      * Create a new instance of Event Bus Client.
      *
-     * @param  array  $ventureConfig
+     * @param  array  $config
      */
     public function __construct(
-        protected array $ventureConfig
+        array $config
     ) {
+        $this->config = collect($config);
     }
 
     /**
@@ -32,11 +37,11 @@ class Client
     public function send(Event $event): void
     {
         $eventType = $event->getEventType();
-        $params = $event->toEventBus($this->ventureConfig);
+        $params = $event->toEventBus($this->config);
 
         if (
-            ! Arr::get($this->ventureConfig, 'enabled', true) ||
-            in_array($eventType, Arr::get($this->ventureConfig, 'dont_report', []))
+            ! $this->config->get('enabled', true) ||
+            in_array($eventType, $this->config->get('dont_report', []))
         ) {
             logger()->debug("$eventType service bus notification [disabled]", [
                 'event' => $eventType,
@@ -47,21 +52,23 @@ class Client
             return;
         }
 
-        $response = $this->request()
-                         ->retry(3, 100, function ($exception, $request) {
-                             // Handle token expiry.
-                             if ($exception instanceof IlluminateRequestException && $exception->response->status() === 401) {
-                                 $request->withHeaders([
-                                     'x-api-key' => $this->getToken(true),
-                                 ]);
-                             }
+        $response = $this
+            ->request()
+            ->withHeaders([
+                'x-api-key' => $this->getToken(),
+            ])
+            ->retry(3, 100, function (Exception $exception, PendingRequest $request) {
+                if (! $exception instanceof IlluminateRequestException || $exception->response->status() !== 401) {
+                    return false;
+                }
 
-                             return true;
-                         })
-                         ->withHeaders([
-                             'x-api-key' => $this->getToken(),
-                         ])
-                         ->post('events', [$params]);
+                $request->withHeaders([
+                    'x-api-key' => $this->getNewToken(),
+                ]);
+
+                return true;
+            })
+            ->post('events', [$params]);
 
         if ($response->failed()) {
             logger()->error($response->status().' code received from event bus', [
@@ -80,53 +87,31 @@ class Client
         ]);
     }
 
-    /**
-     * Create a request to the Event Bus.
-     *
-     * @return PendingRequest
-     */
     protected function request(): PendingRequest
     {
         return Http::withHeaders([
             'Accept' => 'application/json',
             'Content-type' => 'application/json',
         ])->withOptions([
-            'base_uri' => Arr::get($this->ventureConfig, 'endpoint'),
+            'base_uri' => $this->config->get('endpoint'),
         ]);
     }
 
-    /**
-     * Get API Auth Token for the Event bus server.
-     *
-     * @param  bool  $regenerate
-     * @return string
-     */
-    protected function getToken(bool $regenerate = false): string
+    protected function getToken(): string
     {
         $key = $this->generateTokenCacheKey();
-
-        if ($regenerate) {
-            Cache::forget($key);
-        }
 
         return Cache::rememberForever($key, fn () => $this->generateToken());
     }
 
-    /**
-     * Generate a new token for authentication with event bus.
-     *
-     * @return string
-     *
-     * @throws RequestException
-     */
-    protected function generateToken(): string
+    protected function getNewToken(): string
     {
         $response = $this->request()
                          ->retry(3, 100)
-                         ->post('login', Arr::only($this->ventureConfig, [
+                         ->post('login', $this->config->only([
                              'username',
                              'password',
-                             'venture_config_id',
+                             'node_id',
                          ]));
 
         if ($response->clientError()) {
@@ -137,7 +122,12 @@ class Client
             RequestException::requestFailed($response->toException());
         }
 
-        return $response->json('token');
+        $key = $this->generateTokenCacheKey();
+        $token = $response->json('token');
+
+        Cache::put($key, $token);
+
+        return $token;
     }
 
     /**
@@ -149,7 +139,7 @@ class Client
     {
         return md5(
             'service-bus-token'.
-            Arr::get($this->ventureConfig, 'venture_config_id')
+            $this->config->get('node_id')
         );
     }
 }
