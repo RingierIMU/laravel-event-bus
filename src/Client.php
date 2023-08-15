@@ -2,6 +2,7 @@
 
 namespace Ringierimu\EventBus;
 
+use Exception;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException as IlluminateRequestException;
 use Illuminate\Support\Arr;
