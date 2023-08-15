@@ -2,7 +2,6 @@
 
 namespace Ringierimu\EventBus;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
