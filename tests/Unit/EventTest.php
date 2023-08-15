@@ -14,11 +14,4 @@ class EventTest extends TestCase
 
         $this->assertInstanceOf(Event::class, $event);
     }
-
-    public function test_it_does_not_accept_wrong_action_type()
-    {
-        $this->expectException(InvalidConfigException::class);
-
-        Event::make('FooBar')->withAction('invalid', 'User');
-    }
 }

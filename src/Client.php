@@ -6,20 +6,24 @@ use Exception;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException as IlluminateRequestException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Ringierimu\EventBus\Exceptions\RequestException;
 
 class Client
 {
+    protected Collection $config;
+
     /**
      * Create a new instance of Event Bus Client.
      *
-     * @param  array  $ventureConfig
+     * @param  array  $config
      */
     public function __construct(
-        protected array $ventureConfig
+        array $config
     ) {
+        $this->config = collect($config);
     }
 
     /**
@@ -33,11 +37,11 @@ class Client
     public function send(Event $event): void
     {
         $eventType = $event->getEventType();
-        $params = $event->toEventBus($this->ventureConfig);
+        $params = $event->toEventBus($this->config);
 
         if (
-            ! Arr::get($this->ventureConfig, 'enabled', true) ||
-            in_array($eventType, Arr::get($this->ventureConfig, 'dont_report', []))
+            ! $this->config->get('enabled', true) ||
+            in_array($eventType, $this->config->get('dont_report', []))
         ) {
             logger()->debug("$eventType service bus notification [disabled]", [
                 'event' => $eventType,
@@ -89,7 +93,7 @@ class Client
             'Accept' => 'application/json',
             'Content-type' => 'application/json',
         ])->withOptions([
-            'base_uri' => Arr::get($this->ventureConfig, 'endpoint'),
+            'base_uri' => $this->config->get('endpoint'),
         ]);
     }
 
@@ -104,7 +108,7 @@ class Client
     {
         $response = $this->request()
                          ->retry(3, 100)
-                         ->post('login', Arr::only($this->ventureConfig, [
+                         ->post('login', $this->config->only([
                              'username',
                              'password',
                              'node_id',
@@ -135,7 +139,7 @@ class Client
     {
         return md5(
             'service-bus-token'.
-            Arr::get($this->ventureConfig, 'node_id')
+            $this->config->get('node_id')
         );
     }
 }

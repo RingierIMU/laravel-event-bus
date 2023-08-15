@@ -17,7 +17,6 @@ abstract class TestCase extends OrchestraTestCase
     protected function getEnvironmentSetUp($app)
     {
         $app['config']->set('event-bus.venture', [
-            'culture' => 'en_GB',
             'dont_report' => [],
             'enabled' => true,
             'endpoint' => 'https://bus-staging.ritdu.net/v1/',
