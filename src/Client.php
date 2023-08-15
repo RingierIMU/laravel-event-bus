@@ -47,21 +47,23 @@ class Client
             return;
         }
 
-        $response = $this->request()
-                         ->retry(3, 100, function ($exception, $request) {
-                             // Handle token expiry.
-                             if ($exception instanceof IlluminateRequestException && $exception->response->status() === 401) {
-                                 $request->withHeaders([
-                                     'x-api-key' => $this->getToken(true),
-                                 ]);
-                             }
+        $response = $this
+            ->request()
+            ->withHeaders([
+                'x-api-key' => $this->getToken(),
+            ])
+            ->retry(3, 100, function (Exception $exception, PendingRequest $request) {
+                if (! $exception instanceof IlluminateRequestException || $exception->response->status() !== 401) {
+                    return false;
+                }
 
-                             return true;
-                         })
-                         ->withHeaders([
-                             'x-api-key' => $this->getToken(),
-                         ])
-                         ->post('events', [$params]);
+                $request->withHeaders([
+                    'x-api-key' => $this->getNewToken(),
+                ]);
+
+                return true;
+            })
+            ->post('events', [$params]);
 
         if ($response->failed()) {
             logger()->error($response->status().' code received from event bus', [
@@ -80,11 +82,6 @@ class Client
         ]);
     }
 
-    /**
-     * Create a request to the Event Bus.
-     *
-     * @return PendingRequest
-     */
     protected function request(): PendingRequest
     {
         return Http::withHeaders([
@@ -95,31 +92,14 @@ class Client
         ]);
     }
 
-    /**
-     * Get API Auth Token for the Event bus server.
-     *
-     * @param  bool  $regenerate
-     * @return string
-     */
-    protected function getToken(bool $regenerate = false): string
+    protected function getToken(): string
     {
         $key = $this->generateTokenCacheKey();
-
-        if ($regenerate) {
-            Cache::forget($key);
-        }
 
         return Cache::rememberForever($key, fn () => $this->generateToken());
     }
 
-    /**
-     * Generate a new token for authentication with event bus.
-     *
-     * @return string
-     *
-     * @throws RequestException
-     */
-    protected function generateToken(): string
+    protected function getNewToken(): string
     {
         $response = $this->request()
                          ->retry(3, 100)
@@ -137,7 +117,12 @@ class Client
             RequestException::requestFailed($response->toException());
         }
 
-        return $response->json('token');
+        $key = $this->generateTokenCacheKey();
+        $token = $response->json('token');
+
+        Cache::put($key, $token);
+
+        return $token;
     }
 
     /**
